@@ -50,12 +50,6 @@ class Cell:
         else:
             if self.surrounded_cells_mines_length == 0:
                 for cell_obj in self.surrounded_cells:
-                    if cell_obj.surrounded_cells_mines_length == 0:
-                        for c in cell_obj.surrounded_cells:
-                            if c.surrounded_cells_mines_length == 0:
-                                for ce in c.surrounded_cells:
-                                    ce.show_cell()
-                            c.show_cell()
                     cell_obj.show_cell()
             self.show_cell()
 
