@@ -38,6 +38,26 @@ left_frame = Frame(
 )
 left_frame.place(x=0, y=utils.height_prct(25))
 
+instructions1 = Label(
+    left_frame,
+    bg='black',
+    fg='white',
+    text='Left click to reveal cell',
+    font=('', 16)
+)
+
+instructions1.place(x=0, y=utils.height_prct(55))
+
+instructions2 = Label(
+    left_frame,
+    bg='black',
+    fg='white',
+    text='Right click to mark cell',
+    font=('', 16)
+)
+
+instructions2.place(x=0, y=utils.height_prct(60))
+
 center_frame = Frame(
     root,
     bg='#000',
