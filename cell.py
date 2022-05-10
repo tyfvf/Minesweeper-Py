@@ -5,10 +5,9 @@ from random import sample
 import settings
 
 
-
 class Cell:
     all = []
-    cell_count = settings.CELL_COUNT
+    cell_count = settings.CELL_COUNT - settings.MINES_COUNT
     cell_count_label_object = None
 
     def __init__(self, x, y, is_mine=False):
@@ -25,8 +24,10 @@ class Cell:
     def create_btn_object(self, location):
         btn = Button(
             location,
-            width=12,
-            height=4
+            width=3,
+            height=1,
+            font=('', 24)
+
         )
         btn.bind('<Button-1>', self.left_click_actions)  # Left Click
         btn.bind('<Button-3>', self.right_click_actions)  # Right Click
@@ -49,8 +50,21 @@ class Cell:
         else:
             if self.surrounded_cells_mines_length == 0:
                 for cell_obj in self.surrounded_cells:
+                    if cell_obj.surrounded_cells_mines_length == 0:
+                        for c in cell_obj.surrounded_cells:
+                            if c.surrounded_cells_mines_length == 0:
+                                for ce in c.surrounded_cells:
+                                    ce.show_cell()
+                            c.show_cell()
                     cell_obj.show_cell()
             self.show_cell()
+
+            if Cell.cell_count == 0:
+                windll.user32.MessageBoxW(0, 'Congratulations! You won the game!', 'You won!', 0)
+
+        # Cancel Left and Right click events if cell is already opened
+        self.cell_btn_object.unbind('<Button-1>')
+        self.cell_btn_object.unbind('<Button-3>')
 
     def get_cell_by_axis(self, x, y):
         # Return a cell object based on the value of x, y
@@ -93,9 +107,47 @@ class Cell:
                 text=self.surrounded_cells_mines_length
             )
 
+            if self.surrounded_cells_mines_length == 1:
+                self.cell_btn_object.configure(
+                    fg='#0100FC'
+                )
+            elif self.surrounded_cells_mines_length == 2:
+                self.cell_btn_object.configure(
+                    fg='#037F01'
+                )
+            elif self.surrounded_cells_mines_length == 3:
+                self.cell_btn_object.configure(
+                    fg='#FC0100'
+                )
+            elif self.surrounded_cells_mines_length == 4:
+                self.cell_btn_object.configure(
+                    fg='#010080'
+                )
+            elif self.surrounded_cells_mines_length == 5:
+                self.cell_btn_object.configure(
+                    fg='#7E0301'
+                )
+            elif self.surrounded_cells_mines_length == 6:
+                self.cell_btn_object.configure(
+                    fg='#02807F'
+                )
+            elif self.surrounded_cells_mines_length == 7:
+                self.cell_btn_object.configure(
+                    fg='#000101'
+                )
+            elif self.surrounded_cells_mines_length == 8:
+                self.cell_btn_object.configure(
+                    fg='#808080'
+                )
+
             # Replace the text of cell count label with the newer count
             if Cell.cell_count_label_object:
                 Cell.cell_count_label_object.configure(text=f'Cells Left: {Cell.cell_count}')
+
+            # If mine candidate change the background color
+            self.cell_btn_object.configure(
+                bg='SystemButtonFace'
+            )
 
         # Mark the cell as opened
         self.is_opened = True
